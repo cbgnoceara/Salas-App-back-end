@@ -55,25 +55,55 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Senha incorreta!' });
     }
     
-    // --- INÍCIO DA CORREÇÃO ---
-
-    // 1. Criamos um objeto com os dados do usuário que queremos enviar para o App.
-    //    É importante não enviar a senha de volta.
+    // Agora a resposta do login também inclui o campo da foto de perfil
     const userData = {
       _id: user._id,
       nome: user.nome,
-      sobrenome: user.sobrenome
+      sobrenome: user.sobrenome,
+      fotoPerfil: user.fotoPerfil // Incluído aqui
     };
 
-    // 2. Enviamos a mensagem de sucesso E o objeto com os dados do usuário.
-    //    Agora a resposta corresponde ao que a LoginScreen espera!
     res.status(200).json({ message: 'Login bem-sucedido!', user: userData });
-
-    // --- FIM DA CORREÇÃO ---
 
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor!' });
   }
 };
 
-module.exports = { registerUser, getAllUsers, loginUser };
+
+// --- NOVA FUNÇÃO ADICIONADA ---
+const updateUserProfilePic = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    // O 'req.file' é disponibilizado pelo Multer e contém os dados do upload no Cloudinary
+    if (!req.file) {
+      return res.status(400).json({ message: 'Nenhum arquivo enviado.' });
+    }
+
+    const fotoUrl = req.file.path; // URL segura fornecida pelo Cloudinary
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { fotoPerfil: fotoUrl },
+      { new: true } // Retorna o documento atualizado
+    ).select('-senha'); // Não envia a senha de volta
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+
+    res.status(200).json({ message: 'Foto de perfil atualizada!', user: updatedUser });
+  } catch (error) {
+    console.error('Erro ao atualizar foto:', error);
+    res.status(500).json({ message: 'Erro no servidor!' });
+  }
+};
+// --- FIM DA NOVA FUNÇÃO ---
+
+
+module.exports = { 
+  registerUser, 
+  getAllUsers, 
+  loginUser,
+  updateUserProfilePic // Exportando a nova função
+};
