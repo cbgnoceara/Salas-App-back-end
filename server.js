@@ -18,7 +18,10 @@ mongoose.connect(process.env.MONGO_URI)
 
 // --- Rota de Ping para manter o serviço ativo ---
 app.get('/ping', (req, res) => {
-  // Apenas responde com uma mensagem simples para confirmar que o servidor está vivo.
+  // ADICIONADO: Log para confirmar o recebimento do ping no terminal
+  console.log(`PING recebido em: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`);
+  
+  // A resposta para o serviço de ping continua a mesma
   res.status(200).json({ message: 'pong' });
 });
 // ---------------------------------------------
