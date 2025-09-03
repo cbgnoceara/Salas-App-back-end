@@ -34,7 +34,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 
   // --- Auto-ping a cada 5 minutos ---
-  /*const SELF_URL = `https://salas-app-back-end.onrender.com/ping`; // 🔁 Substitua pela sua URL pública
+  const SELF_URL = `https://salas-app-back-end.onrender.com/ping`; // 🔁 Substitua pela sua URL pública
   setInterval(() => {
     axios.get(SELF_URL)
       .then(() => {
@@ -44,5 +44,6 @@ app.listen(PORT, () => {
         console.error(`[AUTO-PING] Erro: ${err.message}`);
       });
   }, 5 * 60 * 1000); // 5 minutos em milissegundos
-});*/
+});
+
 
